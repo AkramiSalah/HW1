@@ -27,4 +27,10 @@ Tell us a bit about yourselves!
 	- Favorite singer:tim mcllrath
 	- Favorite song:endgame
 	- Desirable grade in Matam:100
-	- which TA's song you liked the most: football
+	- which TA's song you liked the most: Regev's
+
+	- First student's name: Akrami
+	- Favorite singer: Jhonny Cash
+	- Favorite song: Sunflower
+	- Desirable grade in Matam: 101
+	- which TA's song you liked the most: Mohhammed's
