@@ -13,12 +13,12 @@ void TransactionDumpInfo(const Transaction& transaction, ofstream& file)
 string TransactionHashedMessage(const Transaction& transaction)
 {
     return hash(transaction.value, transaction.sender, transaction.receiver);
-    std::cout << "Sender Name: " << transaction.sender << endl;
-    std::cout << "Receiver Name: " << transaction.receiver << endl;
-    std::cout << "Transaction Value: " << transaction.value << endl;
+    std::cout << "Sender Name: " << transaction.sender << std::endl;
+    std::cout << "Receiver Name: " << transaction.receiver << std::endl;
+    std::cout << "Transaction Value: " << transaction.value << std::endl;
 }
 
 bool TransactionVerifyHashedMessage(const Transaction& transaction,string hashedMessage)
 {
-    return TransactionHashedMessage(transaction)==hashedMessage;
+    return TransactionHashedMessage(transaction) == hashedMessage;
 }
