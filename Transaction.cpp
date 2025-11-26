@@ -8,3 +8,10 @@ void TransactionDumpInfo(const Transaction& transaction, ofstream& file)
     std::cout << "Receiver Name: " << transaction.receiver << endl;
     std::cout << "Transaction Value: " << transaction.value << endl;
 }
+bool TransactionVerifyHashedMessage(
+        const Transaction& transaction,
+        string hashedMessage
+)
+{
+    return TransactionHashedMessage(transaction)==hashedMessage;
+}
