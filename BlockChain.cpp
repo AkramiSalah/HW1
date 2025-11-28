@@ -1,9 +1,8 @@
 #include "BlockChain.h"
 #include <string>
 BlockChain BlockChainInit(){
-    BlockChain blockChain;
+    BlockChain blockChain{};
     blockChain.head = nullptr;
-    blockChain.tail = nullptr;
     blockChain.size = 0;
     return blockChain;
 }
@@ -26,15 +25,14 @@ int BlockChainGetSize(const BlockChain& blockChain){
 
 
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
-    int sum=0;
+    int sum = 0;
     const BlockLink* current = blockChain.head;
     while (current!=nullptr) {
-        if (current->block.transaction->receiver==name)
-            sum+=current->block.transaction->value;
-        else if (current->block.transaction->sender==name)
-            sum-=current->block.transaction->value;
-        current=current->next;
-        delete current;
+        if (current->block.transaction.receiver==name)
+            sum += current->block.transaction.value;
+        else if (current->block.transaction.sender==name)
+            sum -= current->block.transaction.value;
+        current = current->next;
     }
     return sum;
 }
@@ -46,7 +44,7 @@ void BlockChainAppendTransaction(
         const string& receiver,
         const string& timestamp
 ){
-    const Transaction* transaction = new Transaction({value, sender, receiver});
+    Transaction transaction = Transaction({value, sender, receiver});
     const Block newBlock = {transaction, timestamp};
     BlockLink* newHeadLink = new BlockLink {newBlock, blockChain.head};
 

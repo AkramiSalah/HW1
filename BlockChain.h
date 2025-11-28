@@ -14,7 +14,7 @@ typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
 	const Transaction& transaction;
-	const std::string timestamp;
+	const string timestamp;
 };
 
 struct BlockLink {
@@ -30,7 +30,6 @@ struct BlockLink {
 */
 struct BlockChain {
 	BlockLink* head;
-	BlockLink* tail;
 	int size;
 
 };
