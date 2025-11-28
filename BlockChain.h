@@ -13,13 +13,13 @@ using std::ofstream;
 typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
-	const Transaction& transaction;
+ Transaction& transaction;
 	const string timestamp;
 };
 
 struct BlockLink {
  const Block block;
- const BlockLink* next;
+ BlockLink* next;
 };
 
 

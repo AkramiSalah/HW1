@@ -68,6 +68,29 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file)
 
 }
 
+bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
+    const BlockLink* current_link = blockChain.head;
+    string current_hash;
+    while (!file.eof()) {
+        getline(file,current_hash);
+        bool currentLinkVerified = TransactionVerifyHashedMessage(current_link->block.transaction,current_hash );
+        if (!currentLinkVerified) {return false;}
+        current_link = current_link->next;
+    }
+    return true;
+}
+
+void BlockChainTransform(BlockChain &blockChain, updateFunction function) {
+    BlockLink *current_link = blockChain.head;
+    while (current_link != nullptr) {
+        current_link->block.transaction.value = function(current_link->block.transaction.value);
+        current_link = current_link->next;
+    }
+}
+
+
+
+
 
 
 
