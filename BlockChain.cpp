@@ -8,10 +8,6 @@ BlockChain BlockChainInit(){
     return blockChain;
 }
 
-int BlockChainGetSize(const BlockChain& blockChain){
-    return blockChain.size;
-}
-
 void BlockChainDestroy(BlockChain& blockChain) {
     const BlockLink* current=blockChain.head;
     while (current!=nullptr) {
@@ -22,6 +18,12 @@ void BlockChainDestroy(BlockChain& blockChain) {
     blockChain.head=nullptr;
     blockChain.size=-1;
 }
+
+int BlockChainGetSize(const BlockChain& blockChain){
+    return blockChain.size;
+}
+
+
 
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
     int sum=0;
