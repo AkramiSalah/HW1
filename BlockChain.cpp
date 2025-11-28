@@ -18,9 +18,22 @@ void BlockChainDestroy(BlockChain& blockChain) {
         delete current;
         current=next;
     }
-    blockChain.tail=nullptr;
     blockChain.head=nullptr;
     blockChain.size=-1;
+}
+
+int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
+    int sum=0;
+    const BlockLink* current=blockChain.head;
+    while (current!=nullptr) {
+        if (current->block.transaction->receiver==name)
+            sum+=current->block.transaction->value;
+        else if (current->block.transaction->sender==name)
+            sum-=current->block.transaction->value;
+        current=current->next;
+        delete current;
+    }
+    return sum;
 }
 void BlockChainAppendTransaction(
         BlockChain& blockChain,
