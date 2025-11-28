@@ -15,12 +15,12 @@ typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
 	const Transaction* const transaction;
-	string time_of_deal;
+	string timestamp;
 }
 
-struct BlockLinkedList{
-	Block block;
-	Block* next;
+struct BlockLink{
+	const Block block;
+	const Block* next;
 }
 
 /**
@@ -29,8 +29,8 @@ struct BlockLinkedList{
  *
 */
 struct BlockChain {
-	Block* head;
-	Block* tail;
+	BlockLink* head;
+	BlockLink* tail;
 	int size;
 
 };
