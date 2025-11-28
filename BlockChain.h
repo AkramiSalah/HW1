@@ -9,15 +9,18 @@ BlockChain.h
 using std::string;
 using std::ifstream;
 using std::ofstream;
-using std::cout;
-using std::endl;
 
 
 typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
 	const Transaction* const transaction;
+	string time_of_deal;
+}
 
+struct BlockLinkedList{
+	Block block;
+	Block* next;
 }
 
 /**
@@ -27,7 +30,8 @@ struct Block {
 */
 struct BlockChain {
 	Block* head;
-
+	Block* tail;
+	int size;
 
 };
 
