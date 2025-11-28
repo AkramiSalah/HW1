@@ -54,6 +54,20 @@ void BlockChainAppendTransaction(
     
 }
 
+void BlockChainAppendTransaction(
+        BlockChain& blockChain,
+        const Transaction& transaction,
+        const string& timestamp
+){
+
+    Block newBlock = {transaction, timestamp};
+    BlockLink* newHeadLink = new BlockLink {newBlock, blockChain.head};
+
+    blockChain.head = newHeadLink;
+    blockChain.size += 1;
+
+}
+
 void BlockChainDump(const BlockChain& blockChain, ofstream& file)
 {
     file << "BlockChain info:\n" << std::endl;
@@ -80,12 +94,27 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     return true;
 }
 
-void BlockChainTransform(BlockChain &blockChain, updateFunction function) {
-    BlockLink *current_link = blockChain.head;
-    while (current_link != nullptr) {
-        current_link->block.transaction.value = function(current_link->block.transaction.value);
-        current_link = current_link->next;
+void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
+    BlockChain newChain = BlockChainInit();
+    BlockLink* current_old_link = blockChain.head;
+
+    while (current_old_link != nullptr) {
+        const Transaction& old_transaction = current_old_link->block.transaction;
+        unsigned int new_value = function(old_transaction.value);
+
+        const Transaction new_transaction = {
+            new_value,
+            old_transaction.sender,
+            old_transaction.receiver
+        };
+        const std::string& timestamp = current_old_link->block.timestamp;
+        BlockChainAppendTransaction(newChain, new_transaction, timestamp);
+
+
+        current_old_link = current_old_link->next;
     }
+    BlockChainDestroy(blockChain);
+
 }
 
 
