@@ -11,10 +11,11 @@ BlockChain BlockChainInit(){
 int BlockChainGetSize(const BlockChain& blockChain){
     return blockChain.size;
 }
+
 void BlockChainDestroy(BlockChain& blockChain) {
     const BlockLink* current=blockChain.head;
     while (current!=nullptr) {
-        const BlockLink* next=blockChain.head->next;
+        const BlockLink* next = current->next;
         delete current;
         current=next;
     }
@@ -24,7 +25,7 @@ void BlockChainDestroy(BlockChain& blockChain) {
 
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
     int sum=0;
-    const BlockLink* current=blockChain.head;
+    const BlockLink* current = blockChain.head;
     while (current!=nullptr) {
         if (current->block.transaction->receiver==name)
             sum+=current->block.transaction->value;
@@ -35,6 +36,7 @@ int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) 
     }
     return sum;
 }
+
 void BlockChainAppendTransaction(
         BlockChain& blockChain,
         unsigned int value,
@@ -44,7 +46,7 @@ void BlockChainAppendTransaction(
 ){
     const Transaction* transaction = new Transaction({value, sender, receiver});
     const Block newBlock = {transaction, timestamp};
-    BlockLink* newHeadLink = new BlockLink(newBlock, blockChain.head);
+    BlockLink* newHeadLink = new BlockLink {newBlock, blockChain.head};
 
     if(BlockChainGetSize(blockChain) == 0) blockChain.tail = newHeadLink;
 
@@ -52,3 +54,22 @@ void BlockChainAppendTransaction(
     blockChain.size += 1;
     
 }
+
+void BlockChainDump(const BlockChain& blockChain, ofstream& file)
+{
+    file << "BlockChain info:\n" << std::endl;
+    const BlockLink* block_link =blockChain.head;
+    int i = 0;
+    while (block_link!=nullptr) {
+        file << i << "." << std::endl;
+        TransactionDumpInfo(block_link->block.transaction, file);
+        block_link=block_link->next;
+        i++;
+    }
+
+}
+
+
+
+
+
