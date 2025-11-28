@@ -1,4 +1,4 @@
-BlockChain.h 
+
 #pragma once
 
 #include <string>
@@ -10,18 +10,17 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 
-
 typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
 	const Transaction* const transaction;
 	string timestamp;
-}
+};
 
 struct BlockLink{
 	const Block block;
-	const Block* next;
-}
+	const BlockLink* next;
+};
 
 /**
 *
