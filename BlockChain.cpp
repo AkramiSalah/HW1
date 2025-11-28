@@ -44,11 +44,10 @@ void BlockChainAppendTransaction(
         const string& receiver,
         const string& timestamp
 ){
+
     Transaction transaction = Transaction({value, sender, receiver});
     const Block newBlock = {transaction, timestamp};
     BlockLink* newHeadLink = new BlockLink {newBlock, blockChain.head};
-
-    if(BlockChainGetSize(blockChain) == 0) blockChain.tail = newHeadLink;
 
     blockChain.head = newHeadLink;
     blockChain.size += 1;
