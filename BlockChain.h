@@ -14,12 +14,15 @@ typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
 	const Transaction* const transaction;
+	const std::string timestamp;
+
 	string timestamp;
 };
 
 struct BlockLink{
 	const Block block;
 	const BlockLink* next;
+
 };
 
 /**
