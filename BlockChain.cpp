@@ -1,5 +1,7 @@
 #include "BlockChain.h"
+#include <iostream>
 #include <string>
+
 BlockChain BlockChainInit(){
     BlockChain blockChain{};
     blockChain.head = nullptr;
@@ -25,7 +27,7 @@ int BlockChainGetSize(const BlockChain& blockChain){
 
 
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
-    int sum = 0;
+    unsigned int sum = 0;
     const BlockLink* current = blockChain.head;
     while (current!=nullptr) {
         if (current->block.transaction.receiver==name)
@@ -67,6 +69,34 @@ void BlockChainAppendTransaction(
     blockChain.size += 1;
 
 }
+std::string ContentReader(const string& line,int& index) {
+    string reader="";
+    reader="";
+    while (line[index]!='>') {
+        reader+=line[index];
+        index++;
+    }
+    index+=3;
+    return reader;
+}
+
+BlockChain BlockChainLoad(ifstream& file) {
+    BlockChain blockChain=BlockChainInit();
+    string line;
+    int index=1;
+    string sender, receiver, timestamp;
+    unsigned int value;
+    while (getline(file, line)) {
+        index=1;
+        sender=ContentReader(line,index);
+        receiver=ContentReader(line,index);
+        value=std::stoi(ContentReader(line,index));
+        timestamp=ContentReader(line,index);
+        BlockChainAppendTransaction(blockChain,value,sender,receiver,timestamp);
+    }
+    return blockChain;
+}
+
 
 void BlockChainDump(const BlockChain& blockChain, ofstream& file)
 {
