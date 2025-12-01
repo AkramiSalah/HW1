@@ -13,13 +13,13 @@ using std::ofstream;
 typedef unsigned int (*updateFunction)(unsigned int);
 
 struct Block {
- const Transaction& transaction;
-	const string timestamp;
+    const Transaction& transaction;
+    const string timestamp;
 };
 
 struct BlockLink {
- const Block block;
- BlockLink* next;
+    const Block block;
+    BlockLink* next;
 };
 
 
@@ -29,9 +29,8 @@ struct BlockLink {
  *
 */
 struct BlockChain {
-	BlockLink* head;
-	int size;
-
+    BlockLink* head;
+    int size;
 };
 
 /**
@@ -76,11 +75,11 @@ int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name);
  * @param timestamp String that holds the time the transaction was made
 */
 void BlockChainAppendTransaction(
-        BlockChain& blockChain,
-        unsigned int value,
-        const string& sender,
-        const string& receiver,
-        const string& timestamp
+    BlockChain& blockChain,
+    unsigned int value,
+    const string& sender,
+    const string& receiver,
+    const string& timestamp
 );
 
 
@@ -92,9 +91,9 @@ void BlockChainAppendTransaction(
  * @param timestamp String that holds the time the transaction was made
 */
 void BlockChainAppendTransaction(
-        BlockChain& blockChain,
-        const Transaction& transaction,
-        const string& timestamp
+    BlockChain& blockChain,
+    const Transaction& transaction,
+    const string& timestamp
 );
 
 

@@ -24,8 +24,6 @@ int BlockChainGetSize(const BlockChain& blockChain){
     return blockChain.size;
 }
 
-
-
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
     unsigned int sum = 0;
     const BlockLink* current = blockChain.head;
@@ -69,6 +67,7 @@ void BlockChainAppendTransaction(
     blockChain.size += 1;
 
 }
+
 std::string ContentReader(const string& line,int& index) {
     string reader="";
     reader="";
@@ -97,7 +96,6 @@ BlockChain BlockChainLoad(ifstream& file) {
     return blockChain;
 }
 
-
 void BlockChainDump(const BlockChain& blockChain, ofstream& file)
 {
     file << "BlockChain info:\n" << std::endl;
@@ -111,6 +109,7 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file)
     }
 
 }
+
 void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
     const BlockLink* block_link =blockChain.head;
     while (block_link->next!=nullptr) {

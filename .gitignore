@@ -44,3 +44,8 @@
 .vscode
 .idea/
 CMakeLists.txt
+
+# git module and test files
+.gitmodules
+MatamGenericTester
+TechnionMatam
