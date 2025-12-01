@@ -44,9 +44,11 @@ void BlockChainAppendTransaction(
         const string& receiver,
         const string& timestamp
 ){
-
-    Transaction transaction = Transaction({value, sender, receiver});
-    BlockLink* newHeadLink = new BlockLink({transaction, timestamp, blockChain.head});
+    BlockLink* newHeadLink = new BlockLink{
+        Transaction{value, sender, receiver}, 
+        timestamp, 
+        blockChain.head
+    };
 
     blockChain.head = newHeadLink;
     blockChain.size += 1;
@@ -69,7 +71,7 @@ void BlockChainAppendTransaction(
 std::string ContentReader(const string& line,int& index) {
     string reader="";
     reader="";
-    while (line[index]!='>') {
+    while (line[index] != '>') {
         reader+=line[index];
         index++;
     }
