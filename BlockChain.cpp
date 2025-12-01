@@ -131,6 +131,23 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     }
     return true;
 }
+void BlockChainCompress(BlockChain& blockChain) {
+    BlockLink* current_link = blockChain.head;
+    BlockLink* next_link = current_link->next;
+    while (next_link!=nullptr) {
+        if (next_link->block.transaction.receiver==current_link->block.transaction.receiver&&
+            next_link->block.transaction.sender==current_link->block.transaction.sender) {
+            current_link->block.transaction.value+=next_link->block.transaction.value;
+            current_link->next=next_link->next;
+            delete next_link;
+            next_link=current_link->next;
+        }
+        else {
+            current_link=next_link;
+            next_link=current_link->next;
+        }
+    }
+}
 
 void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
     BlockChain newChain = BlockChainInit();
