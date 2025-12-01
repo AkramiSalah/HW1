@@ -111,6 +111,14 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file)
     }
 
 }
+void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
+    const BlockLink* block_link =blockChain.head;
+    while (block_link->next!=nullptr) {
+        file << "<" << TransactionHashedMessage(block_link->block.transaction) << ">" << std::endl;
+        block_link=block_link->next;
+    }
+    file << "<" << TransactionHashedMessage(block_link->block.transaction) << ">" ;
+}
 
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     const BlockLink* current_link = blockChain.head;
