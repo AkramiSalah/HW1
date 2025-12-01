@@ -116,6 +116,7 @@ void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
     BlockChainDestroy(blockChain);
     blockChain.head = newChain.head;
     blockChain.size = newChain.size;
+    BlockChainDestroy(newChain);
 
 }
 
