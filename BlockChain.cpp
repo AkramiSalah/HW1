@@ -114,6 +114,8 @@ void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
         current_old_link = current_old_link->next;
     }
     BlockChainDestroy(blockChain);
+    blockChain.head = newChain.head;
+    blockChain.size = newChain.size;
 
 }
 
