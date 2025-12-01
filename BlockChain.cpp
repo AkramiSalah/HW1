@@ -134,15 +134,31 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
 void BlockChainCompress(BlockChain& blockChain) {
     BlockLink* current_link = blockChain.head;
     BlockLink* next_link = current_link->next;
+    BlockLink* prev_link = current_link;
     while (next_link!=nullptr) {
         if (next_link->block.transaction.receiver==current_link->block.transaction.receiver&&
             next_link->block.transaction.sender==current_link->block.transaction.sender) {
-            current_link->block.transaction.value+=next_link->block.transaction.value;
+            Transaction combined_transaction = {current_link->block.transaction.value+next_link->block.transaction.value,
+                current_link->block.transaction.sender,current_link->block.transaction.receiver};
+            if (current_link==blockChain.head) {
+                current_link=new BlockLink {combined_transaction, current_link->block.timestamp};
+                current_link->next=next_link;
+                blockChain.head=current_link;
+                delete prev_link;
+                prev_link=current_link;
+            }
+            else {
+                prev_link->next=new BlockLink {combined_transaction, current_link->block.timestamp};
+                delete current_link;
+                current_link=prev_link->next;
+                current_link->next=next_link;
+            }
             current_link->next=next_link->next;
             delete next_link;
             next_link=current_link->next;
         }
         else {
+            prev_link=current_link;
             current_link=next_link;
             next_link=current_link->next;
         }
