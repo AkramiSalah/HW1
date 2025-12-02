@@ -10,14 +10,14 @@ BlockChain BlockChainInit(){
 }
 
 void BlockChainDestroy(BlockChain& blockChain) {
-    BlockLink* current=blockChain.head;
-    while (current!=nullptr) {
+    BlockLink* current = blockChain.head;
+    while (current != nullptr) {
         BlockLink* next = current->next;
         delete current;
-        current=next;
+        current = next;
     }
-    blockChain.head=nullptr;
-    blockChain.size=-1;
+    blockChain.head = nullptr;
+    blockChain.size = -1;
 }
 
 int BlockChainGetSize(const BlockChain& blockChain){
@@ -25,12 +25,12 @@ int BlockChainGetSize(const BlockChain& blockChain){
 }
 
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
-    unsigned int sum = 0;
+    int sum = 0;
     const BlockLink* current = blockChain.head;
-    while (current!=nullptr) {
-        if (current->transaction.receiver==name)
+    while (current != nullptr) {
+        if (current->transaction.receiver == name)
             sum += current->transaction.value;
-        else if (current->transaction.sender==name)
+        else if (current->transaction.sender == name)
             sum -= current->transaction.value;
         current = current->next;
     }
@@ -68,46 +68,45 @@ void BlockChainAppendTransaction(
     );
 }
 
-std::string ContentReader(const string& line,int& index) {
-    string reader="";
-    reader="";
+std::string ContentReader(const string& line, int& index){
+    string reader = "";
     while (line[index] != '>') {
-        reader+=line[index];
+        reader += line[index];
         index++;
     }
-    index+=3;
+    index += 3;
     return reader;
 }
 
 BlockChain BlockChainLoad(ifstream& file) {
     BlockChain blockChain = BlockChainInit();
     string line;
-    int index=1;
+    int index = 1;
     string sender, receiver, timestamp;
     unsigned int value;
     while (getline(file, line)) {
-        index=1;
-        sender=ContentReader(line,index);
-        receiver=ContentReader(line,index);
-        value=std::stoi(ContentReader(line,index));
-        timestamp=ContentReader(line,index);
-        BlockChainAppendTransaction(blockChain,value,sender,receiver,timestamp);
+        index = 1;
+        sender = ContentReader(line,index);
+        receiver = ContentReader(line,index);
+        value = std::stoi(ContentReader(line,index));
+        timestamp = ContentReader(line,index);
+        BlockChainAppendTransaction(
+            blockChain, value, sender, receiver, timestamp);
     }
     return blockChain;
 }
 
 void BlockChainDump(const BlockChain& blockChain, ofstream& file){
-    file << "BlockChain info:\n" << std::endl;
+    file << "BlockChain info:" << std::endl;
     const BlockLink* block_link = blockChain.head;
-    int i = 0;
+    int i = 1;
     while (block_link != nullptr) {
-        if (i != 0) file << std::endl;
+        if (i != 1) file << std::endl;
         file << i << "." << std::endl;
         TransactionDumpInfo(block_link->transaction, file);
-        block_link=block_link->next;
+        block_link = block_link->next;
         i++;
     }
-
 }
 
 void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
