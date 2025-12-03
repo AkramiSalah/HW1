@@ -84,7 +84,7 @@ void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
     unsigned int value;
     if (getline(file, line)) {
         BuildBlockChainBackwards(file, blockChain);
-        index=0;
+        index = 0;
         sender = ContentReader(line, index);
         receiver = ContentReader(line, index);
         value = std::stoi(ContentReader(line, index));
