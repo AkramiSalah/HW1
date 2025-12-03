@@ -68,20 +68,22 @@ void BlockChainAppendTransaction(
     );
 }
 
-std::string ContentReader(const string& line, int& index){
+std::string ContentReader(const string& line, unsigned int& index){
     string reader = "";
-    while (line[index] != ' ') {
+    while (index < line.length() && line[index] != ' ') { 
         reader += line[index];
         index++;
     }
-    index += 2;
+    if (index < line.length()) { 
+        index += 1; 
+    }
     return reader;
 }
 
 BlockChain BlockChainLoad(ifstream& file) {
     BlockChain blockChain = BlockChainInit();
     string line;
-    int index=0;
+    unsigned int index=0;
     string sender, receiver, timestamp;
     unsigned int value;
     while (getline(file, line)) {
