@@ -81,27 +81,32 @@ std::string ContentReader(const string& line, unsigned int& index){
     return reader;
 }
 
-void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
+BlockChain BlockChainLoad(ifstream& file) {
+    BlockChain blockChain = BlockChainInit();
     string line;
     unsigned int index = 0;
     string sender, receiver, timestamp;
     unsigned int value;
-    if (getline(file, line)) {
-        BuildBlockChainBackwards(file, blockChain);
+    while (getline(file, line)) {
         index = 0;
-        sender = ContentReader(line, index);
-        receiver = ContentReader(line, index);
-        value = std::stoi(ContentReader(line, index));
-        timestamp = ContentReader(line, index);
+        sender = ContentReader(line,index);
+        receiver = ContentReader(line,index);
+        value = std::stoi(ContentReader(line,index));
+        timestamp = ContentReader(line,index);
         BlockChainAppendTransaction(
             blockChain, value, sender, receiver, timestamp);
     }
-}
 
-BlockChain BlockChainLoad(ifstream& file) {
-    BlockChain blockChain = BlockChainInit();
-    BuildBlockChainBackwards(file, blockChain);
-    return blockChain;
+    BlockChain blockChainRevesed = BlockChainInit();
+    const BlockLink* current = blockChain.head;
+    while (current != nullptr) {
+        BlockChainAppendTransaction(blockChainRevesed, current->transaction, current->timestamp);
+        current = current->next;
+    }
+
+    BlockChainDestroy(blockChain);
+
+    return blockChainRevesed;
 }
 
 void BlockChainDump(const BlockChain& blockChain, ofstream& file){
@@ -127,7 +132,7 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
 }
 
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
-    const BlockLink* current_link = blockChain.head;
+    BlockLink* current_link = blockChain.head;
     string current_hash;
     while (getline(file, current_hash)) {
         bool currentLinkVerified = TransactionVerifyHashedMessage(
@@ -141,7 +146,7 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
 void BlockChainCompress(BlockChain& blockChain) {
     BlockLink* current_link = blockChain.head;
     BlockLink* next_link = current_link->next;
-    while (next_link!=nullptr) {
+    while (next_link != nullptr) {
         if (next_link->transaction.receiver == current_link->transaction.receiver &&
             next_link->transaction.sender == current_link->transaction.sender) {
             current_link->transaction.value += next_link->transaction.value;

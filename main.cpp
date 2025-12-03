@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include "BlockChain.h"
-#include "Transaction.h" 
 #include "Utilities.h"
 
 
