@@ -87,7 +87,7 @@ BlockChain BlockChainLoad(ifstream& file) {
     string sender, receiver, timestamp;
     unsigned int value;
     while (getline(file, line)) {
-        index=0;
+        index = 0;
         sender = ContentReader(line,index);
         receiver = ContentReader(line,index);
         value = std::stoi(ContentReader(line,index));
@@ -113,10 +113,10 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file){
 }
 
 void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
-    const BlockLink* block_link =blockChain.head;
-    while (block_link->next!=nullptr) {
+    const BlockLink* block_link = blockChain.head;
+    while (block_link->next != nullptr) {
         file << TransactionHashedMessage(block_link->transaction) << std::endl;
-        block_link=block_link->next;
+        block_link = block_link->next;
     }
     file << TransactionHashedMessage(block_link->transaction)  ;
 }
@@ -125,8 +125,8 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     const BlockLink* current_link = blockChain.head;
     string current_hash;
     while (!file.eof()) {
-        getline(file,current_hash);
-        bool currentLinkVerified = TransactionVerifyHashedMessage(current_link->transaction,current_hash );
+        getline(file, current_hash);
+        bool currentLinkVerified = TransactionVerifyHashedMessage(current_link->transaction, current_hash);
         if (!currentLinkVerified) {return false;}
         current_link = current_link->next;
     }
@@ -137,16 +137,16 @@ void BlockChainCompress(BlockChain& blockChain) {
     BlockLink* current_link = blockChain.head;
     BlockLink* next_link = current_link->next;
     while (next_link!=nullptr) {
-        if (next_link->transaction.receiver==current_link->transaction.receiver&&
-            next_link->transaction.sender==current_link->transaction.sender) {
-            current_link->transaction.value+=next_link->transaction.value;
-            current_link->next=next_link->next;
+        if (next_link->transaction.receiver == current_link->transaction.receiver &&
+            next_link->transaction.sender == current_link->transaction.sender) {
+            current_link->transaction.value += next_link->transaction.value;
+            current_link->next = next_link->next;
             delete next_link;
             next_link=current_link->next;
             }
         else {
-            current_link=next_link;
-            next_link=current_link->next;
+            current_link = next_link;
+            next_link = current_link->next;
         }
     }
 }
