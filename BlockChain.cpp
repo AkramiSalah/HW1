@@ -74,9 +74,7 @@ std::string ContentReader(const string& line, unsigned int& index){
         reader += line[index];
         index++;
     }
-    if (index < line.length()) { 
-        index += 1; 
-    }
+    index ++;
     return reader;
 }
 void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
@@ -90,15 +88,7 @@ void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
         sender = ContentReader(line,index);
         receiver = ContentReader(line,index);
         value = std::stoi(ContentReader(line,index));
-        string reader = "";
-        while (index < line.length() && line[index] != '\n') {
-            reader += line[index];
-            index++;
-        }
-        if (index < line.length()) {
-            index += 1;
-        }
-        timestamp = reader;
+        timestamp = ContentReader(line,index);
         BlockChainAppendTransaction(
             blockChain, value, sender, receiver, timestamp);
     }
@@ -111,7 +101,7 @@ BlockChain BlockChainLoad(ifstream& file) {
 }
 
 void BlockChainDump(const BlockChain& blockChain, ofstream& file){
-    file << "BlockChain info:" << std::endl;
+    file << "BlockChain Info:" << std::endl;
     const BlockLink* block_link = blockChain.head;
     int i = 1;
     while (block_link != nullptr) {
