@@ -74,7 +74,7 @@ std::string ContentReader(const string& line, int& index){
         reader += line[index];
         index++;
     }
-    index += 1;
+    index += 2;
     return reader;
 }
 
