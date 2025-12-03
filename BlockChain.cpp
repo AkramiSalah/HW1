@@ -79,22 +79,34 @@ std::string ContentReader(const string& line, unsigned int& index){
     }
     return reader;
 }
-
-BlockChain BlockChainLoad(ifstream& file) {
-    BlockChain blockChain = BlockChainInit();
+void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
     string line;
     unsigned int index=0;
     string sender, receiver, timestamp;
     unsigned int value;
-    while (getline(file, line)) {
-        index = 0;
+    if (getline(file, line)) {
+        BuildBlockChainBackwards(file, blockChain);
+        index=0;
         sender = ContentReader(line,index);
         receiver = ContentReader(line,index);
         value = std::stoi(ContentReader(line,index));
-        timestamp = ContentReader(line,index);
+        string reader = "";
+        while (index < line.length() && line[index] != '\n') {
+            reader += line[index];
+            index++;
+        }
+        if (index < line.length()) {
+            index += 1;
+        }
+        timestamp = reader;
         BlockChainAppendTransaction(
             blockChain, value, sender, receiver, timestamp);
     }
+}
+
+BlockChain BlockChainLoad(ifstream& file) {
+    BlockChain blockChain = BlockChainInit();
+    BuildBlockChainBackwards(file,blockChain);
     return blockChain;
 }
 
@@ -103,10 +115,9 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file){
     const BlockLink* block_link = blockChain.head;
     int i = 1;
     while (block_link != nullptr) {
-        if (i != 1) file << std::endl;
         file << i << "." << std::endl;
         TransactionDumpInfo(block_link->transaction, file);
-        file << "Transaction timestamp: " << block_link->timestamp;
+        file << "Transaction timestamp: " << block_link->timestamp << std::endl;
         block_link = block_link->next;
         i++;
     }
