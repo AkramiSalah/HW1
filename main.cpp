@@ -17,7 +17,11 @@ int main(int argc, char** argv) {
     string target = argv[3];
 
     if(operation == "format"){
-
+        ifstream in_file(source);
+        ofstream out_file(target);
+        BlockChain blockchain = BlockChainLoad(in_file);
+        BlockChainDump(blockchain, out_file);
+        BlockChainDestroy(blockchain);
     }else if(operation == "hash"){
 
     }else if(operation == "compress"){
