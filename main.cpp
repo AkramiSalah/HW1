@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
         std::cerr << "unvalid operation, you can use format, hash, compress or verify only" << std::endl;
         return 1;
     }
-
-
+    BlockChainDestroy(blockchain);
+    delete blockchain.head;
     return 0;
 }
