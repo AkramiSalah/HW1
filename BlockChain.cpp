@@ -74,7 +74,7 @@ std::string ContentReader(const string& line, unsigned int& index){
         reader += line[index];
         index++;
     }
-    index ++;
+    index++;
     return reader;
 }
 void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
@@ -85,10 +85,10 @@ void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
     if (getline(file, line)) {
         BuildBlockChainBackwards(file, blockChain);
         index=0;
-        sender = ContentReader(line,index);
-        receiver = ContentReader(line,index);
-        value = std::stoi(ContentReader(line,index));
-        timestamp = ContentReader(line,index);
+        sender = ContentReader(line, index);
+        receiver = ContentReader(line, index);
+        value = std::stoi(ContentReader(line, index));
+        timestamp = ContentReader(line, index);
         BlockChainAppendTransaction(
             blockChain, value, sender, receiver, timestamp);
     }
@@ -96,7 +96,7 @@ void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
 
 BlockChain BlockChainLoad(ifstream& file) {
     BlockChain blockChain = BlockChainInit();
-    BuildBlockChainBackwards(file,blockChain);
+    BuildBlockChainBackwards(file, blockChain);
     return blockChain;
 }
 
@@ -119,7 +119,7 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
         file << TransactionHashedMessage(block_link->transaction) << std::endl;
         block_link = block_link->next;
     }
-    file << TransactionHashedMessage(block_link->transaction)  ;
+    file << TransactionHashedMessage(block_link->transaction);
 }
 
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
@@ -127,7 +127,8 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     string current_hash;
     while (!file.eof()) {
         getline(file, current_hash);
-        bool currentLinkVerified = TransactionVerifyHashedMessage(current_link->transaction, current_hash);
+        bool currentLinkVerified = TransactionVerifyHashedMessage(
+            current_link->transaction, current_hash);
         if (!currentLinkVerified) {return false;}
         current_link = current_link->next;
     }
@@ -143,7 +144,7 @@ void BlockChainCompress(BlockChain& blockChain) {
             current_link->transaction.value += next_link->transaction.value;
             current_link->next = next_link->next;
             delete next_link;
-            next_link=current_link->next;
+            next_link = current_link->next;
             }
         else {
             current_link = next_link;
@@ -160,11 +161,3 @@ void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
         current_link = current_link->next;
     }
 }
-
-
-
-
-
-
-
-
