@@ -83,7 +83,7 @@ std::string ContentReader(const string& line, unsigned int& index){
 
 void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
     string line;
-    unsigned int index=0;
+    unsigned int index = 0;
     string sender, receiver, timestamp;
     unsigned int value;
     if (getline(file, line)) {
@@ -129,8 +129,7 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     const BlockLink* current_link = blockChain.head;
     string current_hash;
-    while (!file.eof()) {
-        getline(file, current_hash);
+    while (getline(file, current_hash)) {
         bool currentLinkVerified = TransactionVerifyHashedMessage(
             current_link->transaction, current_hash);
         if (!currentLinkVerified) {return false;}
