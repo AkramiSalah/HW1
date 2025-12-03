@@ -22,7 +22,19 @@ int main(int argc, char** argv) {
         BlockChain blockchain = BlockChainLoad(in_file);
         BlockChainDump(blockchain, out_file);
     }else if(operation == "hash"){
+        std::ifstream ifile(source);
+        if (!ifile) {
+            std::cerr << "Error: could not open file 'test'\n";
+            return 1;
+        }
+        std::ofstream ofile(target);
 
+        if (!ofile) {
+            std::cerr << "Error: could not open file 'test' for writing\n";
+            return 1;
+        }
+        BlockChain blockchain=BlockChainLoad(ifile);
+        BlockChainDumpHashed(blockchain, ofile);
     }else if(operation == "compress"){
 
     }else if(operation == "verify"){
