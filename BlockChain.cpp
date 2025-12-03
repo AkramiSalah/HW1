@@ -70,13 +70,17 @@ void BlockChainAppendTransaction(
 
 std::string ContentReader(const string& line, unsigned int& index){
     string reader = "";
-    while (index < line.length() && line[index] != ' ') { 
+    while (index < line.length()) { 
         reader += line[index];
         index++;
+        if(line[index] == ' '){
+            index++;
+            return reader;
+        }
     }
-    index++;
     return reader;
 }
+
 void BuildBlockChainBackwards(ifstream& file,BlockChain& blockChain) {
     string line;
     unsigned int index=0;
