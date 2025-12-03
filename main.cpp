@@ -16,34 +16,35 @@ int main(int argc, char** argv) {
     string source = argv[2];
     string target = argv[3];
 
+    ifstream in_file(source);
+    if (!in_file) {
+        std::cerr << "could not open source file" << std::endl;
+        return 1;
+    }
+
+    ofstream out_file(target);
+    if (!out_file) {
+        std::cerr << "could not open target file" << std::endl;
+        return 1;
+    }
+
+    BlockChain blockchain = BlockChainLoad(in_file);
     if(operation == "format"){
-        ifstream in_file(source);
-        ofstream out_file(target);
-        BlockChain blockchain = BlockChainLoad(in_file);
         BlockChainDump(blockchain, out_file);
-        BlockChainDestroy(blockchain);
     }else if(operation == "hash"){
-        std::ifstream ifile(source);
-        if (!ifile) {
-            std::cerr << "Error: could not open file 'test'\n";
-            return 1;
-        }
-        std::ofstream ofile(target);
-
-        if (!ofile) {
-            std::cerr << "Error: could not open file 'test' for writing\n";
-            return 1;
-        }
-        BlockChain blockchain=BlockChainLoad(ifile);
-        BlockChainDumpHashed(blockchain, ofile);
+        BlockChainDumpHashed(blockchain, out_file);
     }else if(operation == "compress"){
-
+        BlockChainCompress(blockchain);
+        BlockChainDump(blockchain, out_file);
     }else if(operation == "verify"){
-
+        bool verify_res = BlockChainVerifyFile(blockchain, in_file);
+        string verification_status = verify_res ? "passed" : "failed";
+        std::cout << "Verification " << verification_status << std::endl;
     }else{
         std::cerr << "unvalid operation, you can use format, hash, compress or verify only" << std::endl;
         return 1;
     }
+
 
     return 0;
 }
