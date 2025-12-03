@@ -81,11 +81,11 @@ std::string ContentReader(const string& line, int& index){
 BlockChain BlockChainLoad(ifstream& file) {
     BlockChain blockChain = BlockChainInit();
     string line;
-    int index = 1;
+    int index=0;
     string sender, receiver, timestamp;
     unsigned int value;
     while (getline(file, line)) {
-        index = 1;
+        index=0;
         sender = ContentReader(line,index);
         receiver = ContentReader(line,index);
         value = std::stoi(ContentReader(line,index));
