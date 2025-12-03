@@ -35,12 +35,16 @@ int main(int argc, char** argv) {
         BlockChainDumpHashed(blockchain, out_file);
     }else if(operation == "compress"){
         BlockChainCompress(blockchain);
+        BlockChainDump(blockchain, out_file);
     }else if(operation == "verify"){
-        
+        bool verify_res = BlockChainVerifyFile(blockchain, in_file);
+        string verification_status = verify_res ? "passed" : "failed";
+        std::cout << "Verification " << verification_status << std::endl;
     }else{
         std::cerr << "unvalid operation, you can use format, hash, compress or verify only" << std::endl;
         return 1;
     }
+
 
     return 0;
 }
