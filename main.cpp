@@ -21,7 +21,6 @@ int main(int argc, char** argv) {
         ofstream out_file(target);
         BlockChain blockchain = BlockChainLoad(in_file);
         BlockChainDump(blockchain, out_file);
-        BlockChainDestroy(blockchain);
     }else if(operation == "hash"){
 
     }else if(operation == "compress"){
