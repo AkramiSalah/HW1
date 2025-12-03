@@ -16,25 +16,24 @@ int main(int argc, char** argv) {
     string source = argv[2];
     string target = argv[3];
 
+    ifstream in_file(source);
+    if (!in_file) {
+        std::cerr << "Error: could not open file 'test'\n";
+        return 1;
+    }
+
+    ofstream out_file(target);
+    if (!out_file) {
+        std::cerr << "Error: could not open file 'test' for writing\n";
+        return 1;
+    }
+
     if(operation == "format"){
-        ifstream in_file(source);
-        ofstream out_file(target);
         BlockChain blockchain = BlockChainLoad(in_file);
         BlockChainDump(blockchain, out_file);
     }else if(operation == "hash"){
-        std::ifstream ifile(source);
-        if (!ifile) {
-            std::cerr << "Error: could not open file 'test'\n";
-            return 1;
-        }
-        std::ofstream ofile(target);
-
-        if (!ofile) {
-            std::cerr << "Error: could not open file 'test' for writing\n";
-            return 1;
-        }
-        BlockChain blockchain=BlockChainLoad(ifile);
-        BlockChainDumpHashed(blockchain, ofile);
+        BlockChain blockchain=BlockChainLoad(in_file);
+        BlockChainDumpHashed(blockchain, out_file);
     }else if(operation == "compress"){
 
     }else if(operation == "verify"){
