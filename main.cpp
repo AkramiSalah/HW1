@@ -3,11 +3,12 @@
 #include <string>
 #include "BlockChain.h"
 #include "Transaction.h" 
+#include "Utilities.h"
 
 
 int main(int argc, char** argv) {
     if(argc != 4){
-        std::cerr << "Usage: ./mtm_blockchain <op> <source> <target>" << std::endl;
+        std::cerr << getErrorMessage() << std::endl;
         return 1;
     }
 
@@ -15,7 +16,7 @@ int main(int argc, char** argv) {
     string source = argv[2];
     string target = argv[3];
 
-    if(operation == "foramt"){
+    if(operation == "format"){
 
     }else if(operation == "hash"){
 
@@ -27,6 +28,6 @@ int main(int argc, char** argv) {
         std::cerr << "unvalid operation, you can use format, hash, compress or verify only" << std::endl;
         return 1;
     }
-    
+
     return 0;
 }
