@@ -70,11 +70,11 @@ void BlockChainAppendTransaction(
 
 std::string ContentReader(const string& line, int& index){
     string reader = "";
-    while (line[index] != '>') {
+    while (line[index] != ' ') {
         reader += line[index];
         index++;
     }
-    index += 3;
+    index += 1;
     return reader;
 }
 
@@ -113,10 +113,10 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file){
 void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
     const BlockLink* block_link =blockChain.head;
     while (block_link->next!=nullptr) {
-        file << "<" << TransactionHashedMessage(block_link->transaction) << ">" << std::endl;
+        file << TransactionHashedMessage(block_link->transaction) << std::endl;
         block_link=block_link->next;
     }
-    file << "<" << TransactionHashedMessage(block_link->transaction) << ">" ;
+    file << TransactionHashedMessage(block_link->transaction)  ;
 }
 
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
