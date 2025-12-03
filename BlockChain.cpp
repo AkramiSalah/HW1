@@ -115,7 +115,6 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file){
     const BlockLink* block_link = blockChain.head;
     int i = 1;
     while (block_link != nullptr) {
-        if (i != 1) file << std::endl;
         file << i << "." << std::endl;
         TransactionDumpInfo(block_link->transaction, file);
         file << "Transaction timestamp: " << block_link->timestamp << std::endl;
