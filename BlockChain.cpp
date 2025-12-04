@@ -134,13 +134,18 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     BlockLink* current_link = blockChain.head;
     string current_hash;
+    int hash_count = 0;
     while (getline(file, current_hash)) {
+        if(current_link == nullptr || hash_count > BlockChainGetSize(blockChain)) return false;
+
         bool currentLinkVerified = TransactionVerifyHashedMessage(
             current_link->transaction, current_hash);
         if (!currentLinkVerified) {return false;}
+
         current_link = current_link->next;
+        hash_count++;
     }
-    return true;
+    return hash_count == BlockChainGetSize(blockChain);
 }
 
 void BlockChainCompress(BlockChain& blockChain) {
