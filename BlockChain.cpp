@@ -97,16 +97,16 @@ BlockChain BlockChainLoad(ifstream& file) {
             blockChain, value, sender, receiver, timestamp);
     }
 
-    BlockChain blockChainRevesed = BlockChainInit();
+    BlockChain blockChainReversed = BlockChainInit();
     const BlockLink* current = blockChain.head;
     while (current != nullptr) {
-        BlockChainAppendTransaction(blockChainRevesed, current->transaction, current->timestamp);
+        BlockChainAppendTransaction(blockChainReversed, current->transaction, current->timestamp);
         current = current->next;
     }
 
     BlockChainDestroy(blockChain);
 
-    return blockChainRevesed;
+    return blockChainReversed;
 }
 
 void BlockChainDump(const BlockChain& blockChain, ofstream& file){

@@ -9,7 +9,7 @@ void TransactionDumpInfo(const Transaction& transaction, ofstream& file)
 {
     file << "Sender Name: " << transaction.sender << endl;
     file << "Receiver Name: " << transaction.receiver << endl;
-    file << "Transaction Value: " << transaction.value;
+    file << "Transaction Value: " << transaction.value << endl;
 }
 
 string TransactionHashedMessage(const Transaction& transaction)

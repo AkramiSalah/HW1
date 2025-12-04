@@ -21,22 +21,39 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    ofstream out_file(target);
-    if (!out_file) {
-        std::cerr << "could not open target file" << std::endl;
-        return 1;
-    }
-
     BlockChain blockchain = BlockChainLoad(in_file);
     if(operation == "format"){
+        ofstream out_file(target);
+        if (!out_file) {
+            std::cerr << "could not open target file" << std::endl;
+            return 1;
+        }
         BlockChainDump(blockchain, out_file);
+
     }else if(operation == "hash"){
+        ofstream out_file(target);
+        if (!out_file) {
+            std::cerr << "could not open target file" << std::endl;
+            return 1;
+        }
         BlockChainDumpHashed(blockchain, out_file);
+
     }else if(operation == "compress"){
         BlockChainCompress(blockchain);
+        ofstream out_file(target);
+        if (!out_file) {
+            std::cerr << "could not open target file" << std::endl;
+            return 1;
+        }
         BlockChainDump(blockchain, out_file);
+        
     }else if(operation == "verify"){
-        bool verify_res = BlockChainVerifyFile(blockchain, in_file);
+        ifstream target_file(target);
+        if (!target_file) {
+            std::cerr << "could not open target file" << std::endl;
+            return 1;
+        }
+        bool verify_res = BlockChainVerifyFile(blockchain, target_file);
         string verification_status = verify_res ? "passed" : "failed";
         std::cout << "Verification " << verification_status << std::endl;
     }else{
