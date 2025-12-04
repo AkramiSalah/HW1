@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv) {
     if(argc != 4){
-        std::cerr << getErrorMessage() << std::endl;
+        std::cout << getErrorMessage() << std::endl;
         return 1;
     }
 
@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 
     ifstream in_file(source);
     if (!in_file) {
-        std::cerr << "could not open source file" << std::endl;
+        std::cout << "could not open source file" << std::endl;
         return 1;
     }
 
@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     if(operation == "format"){
         ofstream out_file(target);
         if (!out_file) {
-            std::cerr << "could not open target file" << std::endl;
+            std::cout << "could not open target file" << std::endl;
             return 1;
         }
         BlockChainDump(blockchain, out_file);
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     }else if(operation == "hash"){
         ofstream out_file(target);
         if (!out_file) {
-            std::cerr << "could not open target file" << std::endl;
+            std::cout << "could not open target file" << std::endl;
             return 1;
         }
         BlockChainDumpHashed(blockchain, out_file);
@@ -42,22 +42,22 @@ int main(int argc, char** argv) {
         BlockChainCompress(blockchain);
         ofstream out_file(target);
         if (!out_file) {
-            std::cerr << "could not open target file" << std::endl;
+            std::cout << "could not open target file" << std::endl;
             return 1;
         }
         BlockChainDump(blockchain, out_file);
-        
+
     }else if(operation == "verify"){
         ifstream target_file(target);
         if (!target_file) {
-            std::cerr << "could not open target file" << std::endl;
+            std::cout << "could not open target file" << std::endl;
             return 1;
         }
         bool verify_res = BlockChainVerifyFile(blockchain, target_file);
         string verification_status = verify_res ? "passed" : "failed";
         std::cout << "Verification " << verification_status << std::endl;
     }else{
-        std::cerr << "unvalid operation, you can use format, hash, compress or verify only" << std::endl;
+        std::cout << getErrorMessage() << std::endl;
         return 1;
     }
     BlockChainDestroy(blockchain);
