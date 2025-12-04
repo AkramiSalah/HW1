@@ -151,7 +151,10 @@ void BlockChainCompress(BlockChain& blockChain) {
             next_link->transaction.sender == current_link->transaction.sender) {
             current_link->transaction.value += next_link->transaction.value;
             current_link->next = next_link->next;
+            
             delete next_link;
+            blockChain.size--;
+            
             next_link = current_link->next;
             }
         else {
