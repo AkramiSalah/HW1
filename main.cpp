@@ -6,7 +6,7 @@
 
 
 int main(int argc, char** argv) {
-    if(argc != 4){
+    if (argc != 4){
         std::cout << getErrorMessage() << std::endl;
         return 1;
     }
@@ -22,13 +22,14 @@ int main(int argc, char** argv) {
     }
     BlockChain blockchain = BlockChainLoad(in_file);
 
-    if(operation == "verify"){
+    if (operation == "verify"){
         ifstream target_file(target);
         if (!target_file) {
             std::cout << "could not open target file" << std::endl;
             BlockChainDestroy(blockchain);
             return 1;
         }
+
         bool verify_res = BlockChainVerifyFile(blockchain, target_file);
         string verification_status = verify_res ? "passed" : "failed";
         std::cout << "Verification " << verification_status << std::endl;
@@ -36,19 +37,17 @@ int main(int argc, char** argv) {
         ofstream out_file(target);
         if (!out_file) {
             std::cout << "could not open target file" << std::endl;
+            BlockChainDestroy(blockchain);
             return 1;
         }
-        if(operation == "format"){
+
+        if (operation == "format"){
             BlockChainDump(blockchain, out_file);
-        }else if(operation == "hash"){
-            
+        }else if (operation == "hash"){
             BlockChainDumpHashed(blockchain, out_file);
-
-        }else if(operation == "compress"){
+        }else if (operation == "compress"){
             BlockChainCompress(blockchain);
-            
             BlockChainDump(blockchain, out_file);
-
         }else{
             std::cout << getErrorMessage() << std::endl;
             BlockChainDestroy(blockchain);
