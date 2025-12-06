@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-//creats an empty blockchain, it does not get anything and returns the empty blockchain
+
 BlockChain BlockChainInit(){
     BlockChain blockChain{};
     blockChain.head = nullptr;
@@ -10,7 +10,7 @@ BlockChain BlockChainInit(){
     return blockChain;
 }
 
-//gets a blockchain and destroys it, it returns nothing
+
 void BlockChainDestroy(BlockChain& blockChain) {
     BlockLink* currentLink = blockChain.head;
     while (currentLink != nullptr) {
@@ -22,12 +22,12 @@ void BlockChainDestroy(BlockChain& blockChain) {
     blockChain.size = -1;
 }
 
-//gets a blockchain and returns it's size
+
 int BlockChainGetSize(const BlockChain& blockChain){
     return blockChain.size;
 }
 
-//gets a blockchain and a persons name and returns the personal balance of the person
+
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
     int sum = 0;
     const BlockLink* currentLink = blockChain.head;
@@ -41,7 +41,7 @@ int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) 
     return sum;
 }
 
-//adds a transaction to a given blockchain with given value,sender,receiver and timestamp and returns nothing
+
 void BlockChainAppendTransaction(
         BlockChain& blockChain,
         unsigned int value,
@@ -59,7 +59,7 @@ void BlockChainAppendTransaction(
     blockChain.size += 1;
 }
 
-//adds a transaction to a given blockchain with given transaction and returns nothing
+
 void BlockChainAppendTransaction(
         BlockChain& blockChain,
         const Transaction& transaction,
@@ -88,7 +88,7 @@ std::string ReadUntilSpace(const string& line, unsigned int& index){
     return reader;
 }
 
-//reads blockchain content from given file and returning the blockchain
+
 BlockChain BlockChainLoad(ifstream& file) {
     BlockChain blockChain = BlockChainInit();
     string line;
@@ -117,7 +117,7 @@ BlockChain BlockChainLoad(ifstream& file) {
     return blockChainReversed;
 }
 
-//gets a blockchain and a file and prints all the blockchain content into the file, returns nothing
+
 void BlockChainDump(const BlockChain& blockChain, ofstream& file){
     file << "BlockChain Info:" << std::endl;
     const BlockLink* blockLink = blockChain.head;
@@ -131,7 +131,7 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file){
     }
 }
 
-//gets a blockchain and a file and prints the hashed messages of each transaction (in order) in the blockchain, returns nothing
+
 void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
     const BlockLink* blockLink = blockChain.head;
     while (blockLink->next != nullptr) {
@@ -141,7 +141,7 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
     file << TransactionHashedMessage(blockLink->transaction);
 }
 
-//verifies if given file with transactional hashed messages and a blockchain have the same hashed messages in order, returns true if it is and false otherwise
+
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     BlockLink* currentLink = blockChain.head;
     string current_hash;
@@ -159,7 +159,7 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
     return hash_count == BlockChainGetSize(blockChain);
 }
 
-//compresses blocks of given blockchain that are next to each other and have the same sender and receiver into one block, returns nothing
+
 void BlockChainCompress(BlockChain& blockChain) {
     BlockLink* currentLink = blockChain.head;
     BlockLink* nextLink = currentLink->next;
@@ -181,7 +181,7 @@ void BlockChainCompress(BlockChain& blockChain) {
     }
 }
 
-//gets a blockchain and a function and changes the transaction values in the blockchain using the functions, returns nothing
+
 void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
     BlockLink* currentLink = blockChain.head;
     while (currentLink != nullptr) {
