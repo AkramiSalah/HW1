@@ -53,6 +53,6 @@ string TransactionHashedMessage(const Transaction& transaction);
  *
 */
 bool TransactionVerifyHashedMessage(
-        const Transaction& transaction,
-        string hashedMessage
+    const Transaction& transaction,
+    string hashedMessage
 );

@@ -1,0 +1,179 @@
+#include "BlockChain.h"
+#include <iostream>
+#include <string>
+
+BlockChain BlockChainInit(){
+    BlockChain blockChain{};
+    blockChain.head = nullptr;
+    blockChain.size = 0;
+    return blockChain;
+}
+
+void BlockChainDestroy(BlockChain& blockChain) {
+    BlockLink* current = blockChain.head;
+    while (current != nullptr) {
+        BlockLink* next = current->next;
+        delete current;
+        current = next;
+    }
+    blockChain.head = nullptr;
+    blockChain.size = -1;
+}
+
+int BlockChainGetSize(const BlockChain& blockChain){
+    return blockChain.size;
+}
+
+int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
+    int sum = 0;
+    const BlockLink* current = blockChain.head;
+    while (current != nullptr) {
+        if (current->transaction.receiver == name)
+            sum += current->transaction.value;
+        else if (current->transaction.sender == name)
+            sum -= current->transaction.value;
+        current = current->next;
+    }
+    return sum;
+}
+
+void BlockChainAppendTransaction(
+        BlockChain& blockChain,
+        unsigned int value,
+        const string& sender,
+        const string& receiver,
+        const string& timestamp
+){
+    BlockLink* newHeadLink = new BlockLink{
+        Transaction{value, sender, receiver}, 
+        timestamp, 
+        blockChain.head
+    };
+
+    blockChain.head = newHeadLink;
+    blockChain.size += 1;
+}
+
+void BlockChainAppendTransaction(
+        BlockChain& blockChain,
+        const Transaction& transaction,
+        const string& timestamp
+){
+    BlockChainAppendTransaction( 
+        blockChain,
+        transaction.value,
+        transaction.sender,
+        transaction.receiver,
+        timestamp
+    );
+}
+
+std::string ContentReader(const string& line, unsigned int& index){
+    string reader = "";
+    while (index < line.length()) { 
+        reader += line[index];
+        index++;
+        if(line[index] == ' '){
+            index++;
+            return reader;
+        }
+    }
+    return reader;
+}
+
+BlockChain BlockChainLoad(ifstream& file) {
+    BlockChain blockChain = BlockChainInit();
+    string line;
+    unsigned int index = 0;
+    string sender, receiver, timestamp;
+    unsigned int value;
+    while (getline(file, line)) {
+        index = 0;
+        sender = ContentReader(line,index);
+        receiver = ContentReader(line,index);
+        value = std::stoi(ContentReader(line,index));
+        timestamp = ContentReader(line,index);
+        BlockChainAppendTransaction(
+            blockChain, value, sender, receiver, timestamp);
+    }
+
+    BlockChain blockChainReversed = BlockChainInit();
+    const BlockLink* current = blockChain.head;
+    while (current != nullptr) {
+        BlockChainAppendTransaction(blockChainReversed, current->transaction, current->timestamp);
+        current = current->next;
+    }
+
+    BlockChainDestroy(blockChain);
+
+    return blockChainReversed;
+}
+
+void BlockChainDump(const BlockChain& blockChain, ofstream& file){
+    file << "BlockChain Info:" << std::endl;
+    const BlockLink* block_link = blockChain.head;
+    int i = 1;
+    while (block_link != nullptr) {
+        file << i << "." << std::endl;
+        TransactionDumpInfo(block_link->transaction, file);
+        file << "Transaction timestamp: " << block_link->timestamp << std::endl;
+        block_link = block_link->next;
+        i++;
+    }
+}
+
+void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
+    const BlockLink* block_link = blockChain.head;
+    while (block_link->next != nullptr) {
+        file << TransactionHashedMessage(block_link->transaction) << std::endl;
+        block_link = block_link->next;
+    }
+    file << TransactionHashedMessage(block_link->transaction);
+}
+
+bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
+    BlockLink* current_link = blockChain.head;
+    string current_hash;
+    int hash_count = 0;
+    while (getline(file, current_hash)) {
+        if(current_link == nullptr || hash_count > BlockChainGetSize(blockChain)) return false;
+
+        bool currentLinkVerified = TransactionVerifyHashedMessage(
+            current_link->transaction, current_hash);
+        if (!currentLinkVerified) {return false;}
+
+        current_link = current_link->next;
+        hash_count++;
+    }
+    return hash_count == BlockChainGetSize(blockChain);
+}
+
+void BlockChainCompress(BlockChain& blockChain) {
+    BlockLink* current_link = blockChain.head;
+    BlockLink* next_link = current_link->next;
+    while (next_link != nullptr) {
+        if (next_link->transaction.receiver == current_link->transaction.receiver &&
+            next_link->transaction.sender == current_link->transaction.sender) {
+            current_link->transaction.value += next_link->transaction.value;
+            current_link->next = next_link->next;
+            
+            delete next_link;
+            blockChain.size--;
+            
+            next_link = current_link->next;
+            }
+        else {
+            current_link = next_link;
+            next_link = current_link->next;
+        }
+    }
+}
+
+void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
+    BlockLink* current_link = blockChain.head;
+    while (current_link != nullptr) {
+        Transaction& current_transaction = current_link->transaction;
+        current_transaction.value = function(current_transaction.value);
+        current_link = current_link->next;
+    }
+}
