@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+//creats an empty blockchain, it does not get anything and returns the empty blockchain
 BlockChain BlockChainInit(){
     BlockChain blockChain{};
     blockChain.head = nullptr;
@@ -9,34 +10,38 @@ BlockChain BlockChainInit(){
     return blockChain;
 }
 
+//gets a blockchain and destroys it, it returns nothing
 void BlockChainDestroy(BlockChain& blockChain) {
-    BlockLink* current = blockChain.head;
-    while (current != nullptr) {
-        BlockLink* next = current->next;
-        delete current;
-        current = next;
+    BlockLink* currentLink = blockChain.head;
+    while (currentLink != nullptr) {
+        BlockLink* next = currentLink->next;
+        delete currentLink;
+        currentLink = next;
     }
     blockChain.head = nullptr;
     blockChain.size = -1;
 }
 
+//gets a blockchain and returns it's size
 int BlockChainGetSize(const BlockChain& blockChain){
     return blockChain.size;
 }
 
+//gets a blockchain and a persons name and returns the personal balance of the person
 int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
     int sum = 0;
-    const BlockLink* current = blockChain.head;
-    while (current != nullptr) {
-        if (current->transaction.receiver == name)
-            sum += current->transaction.value;
-        else if (current->transaction.sender == name)
-            sum -= current->transaction.value;
-        current = current->next;
+    const BlockLink* currentLink = blockChain.head;
+    while (currentLink != nullptr) {
+        if (currentLink->transaction.receiver == name)
+            sum += currentLink->transaction.value;
+        else if (currentLink->transaction.sender == name)
+            sum -= currentLink->transaction.value;
+        currentLink = currentLink->next;
     }
     return sum;
 }
 
+//adds a transaction to a given blockchain with given value,sender,receiver and timestamp and returns nothing
 void BlockChainAppendTransaction(
         BlockChain& blockChain,
         unsigned int value,
@@ -54,6 +59,7 @@ void BlockChainAppendTransaction(
     blockChain.size += 1;
 }
 
+//adds a transaction to a given blockchain with given transaction and returns nothing
 void BlockChainAppendTransaction(
         BlockChain& blockChain,
         const Transaction& transaction,
@@ -68,7 +74,8 @@ void BlockChainAppendTransaction(
     );
 }
 
-std::string ContentReader(const string& line, unsigned int& index){
+//reads content from given string and index and returns the string from said index until you get a space
+std::string ReadUntilSpace(const string& line, unsigned int& index){
     string reader = "";
     while (index < line.length()) { 
         reader += line[index];
@@ -81,6 +88,7 @@ std::string ContentReader(const string& line, unsigned int& index){
     return reader;
 }
 
+//reads blockchain content from given file and returning the blockchain
 BlockChain BlockChainLoad(ifstream& file) {
     BlockChain blockChain = BlockChainInit();
     string line;
@@ -89,19 +97,19 @@ BlockChain BlockChainLoad(ifstream& file) {
     unsigned int value;
     while (getline(file, line)) {
         index = 0;
-        sender = ContentReader(line,index);
-        receiver = ContentReader(line,index);
-        value = std::stoi(ContentReader(line,index));
-        timestamp = ContentReader(line,index);
+        sender = ReadUntilSpace(line,index);
+        receiver = ReadUntilSpace(line,index);
+        value = std::stoi(ReadUntilSpace(line,index));
+        timestamp = ReadUntilSpace(line,index);
         BlockChainAppendTransaction(
             blockChain, value, sender, receiver, timestamp);
     }
 
     BlockChain blockChainReversed = BlockChainInit();
-    const BlockLink* current = blockChain.head;
-    while (current != nullptr) {
-        BlockChainAppendTransaction(blockChainReversed, current->transaction, current->timestamp);
-        current = current->next;
+    const BlockLink* currentLink = blockChain.head;
+    while (currentLink != nullptr) {
+        BlockChainAppendTransaction(blockChainReversed, currentLink->transaction, currentLink->timestamp);
+        currentLink = currentLink->next;
     }
 
     BlockChainDestroy(blockChain);
@@ -109,71 +117,76 @@ BlockChain BlockChainLoad(ifstream& file) {
     return blockChainReversed;
 }
 
+//gets a blockchain and a file and prints all the blockchain content into the file, returns nothing
 void BlockChainDump(const BlockChain& blockChain, ofstream& file){
     file << "BlockChain Info:" << std::endl;
-    const BlockLink* block_link = blockChain.head;
+    const BlockLink* blockLink = blockChain.head;
     int i = 1;
-    while (block_link != nullptr) {
+    while (blockLink != nullptr) {
         file << i << "." << std::endl;
-        TransactionDumpInfo(block_link->transaction, file);
-        file << "Transaction timestamp: " << block_link->timestamp << std::endl;
-        block_link = block_link->next;
+        TransactionDumpInfo(blockLink->transaction, file);
+        file << "Transaction timestamp: " << blockLink->timestamp << std::endl;
+        blockLink = blockLink->next;
         i++;
     }
 }
 
+//gets a blockchain and a file and prints the hashed messages of each transaction (in order) in the blockchain, returns nothing
 void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
-    const BlockLink* block_link = blockChain.head;
-    while (block_link->next != nullptr) {
-        file << TransactionHashedMessage(block_link->transaction) << std::endl;
-        block_link = block_link->next;
+    const BlockLink* blockLink = blockChain.head;
+    while (blockLink->next != nullptr) {
+        file << TransactionHashedMessage(blockLink->transaction) << std::endl;
+        blockLink = blockLink->next;
     }
-    file << TransactionHashedMessage(block_link->transaction);
+    file << TransactionHashedMessage(blockLink->transaction);
 }
 
+//verifies if given file with transactional hashed messages and a blockchain have the same hashed messages in order, returns true if it is and false otherwise
 bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
-    BlockLink* current_link = blockChain.head;
+    BlockLink* currentLink = blockChain.head;
     string current_hash;
     int hash_count = 0;
     while (getline(file, current_hash)) {
-        if(current_link == nullptr || hash_count > BlockChainGetSize(blockChain)) return false;
+        if(currentLink == nullptr || hash_count > BlockChainGetSize(blockChain)) return false;
 
         bool currentLinkVerified = TransactionVerifyHashedMessage(
-            current_link->transaction, current_hash);
+            currentLink->transaction, current_hash);
         if (!currentLinkVerified) {return false;}
 
-        current_link = current_link->next;
+        currentLink = currentLink->next;
         hash_count++;
     }
     return hash_count == BlockChainGetSize(blockChain);
 }
 
+//compresses blocks of given blockchain that are next to each other and have the same sender and receiver into one block, returns nothing
 void BlockChainCompress(BlockChain& blockChain) {
-    BlockLink* current_link = blockChain.head;
-    BlockLink* next_link = current_link->next;
-    while (next_link != nullptr) {
-        if (next_link->transaction.receiver == current_link->transaction.receiver &&
-            next_link->transaction.sender == current_link->transaction.sender) {
-            current_link->transaction.value += next_link->transaction.value;
-            current_link->next = next_link->next;
+    BlockLink* currentLink = blockChain.head;
+    BlockLink* nextLink = currentLink->next;
+    while (nextLink != nullptr) {
+        if (nextLink->transaction.receiver == currentLink->transaction.receiver &&
+            nextLink->transaction.sender == currentLink->transaction.sender) {
+            currentLink->transaction.value += nextLink->transaction.value;
+            currentLink->next = nextLink->next;
             
-            delete next_link;
+            delete nextLink;
             blockChain.size--;
             
-            next_link = current_link->next;
+            nextLink = currentLink->next;
             }
         else {
-            current_link = next_link;
-            next_link = current_link->next;
+            currentLink = nextLink;
+            nextLink = currentLink->next;
         }
     }
 }
 
+//gets a blockchain and a function and changes the transaction values in the blockchain using the functions, returns nothing
 void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
-    BlockLink* current_link = blockChain.head;
-    while (current_link != nullptr) {
-        Transaction& current_transaction = current_link->transaction;
+    BlockLink* currentLink = blockChain.head;
+    while (currentLink != nullptr) {
+        Transaction& current_transaction = currentLink->transaction;
         current_transaction.value = function(current_transaction.value);
-        current_link = current_link->next;
+        currentLink = currentLink->next;
     }
 }
